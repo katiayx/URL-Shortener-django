@@ -6,3 +6,4 @@ lib/
 pip-selfcheck.json
 *.DS_Store
 /env/
+db.sqlite3

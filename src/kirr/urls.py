@@ -23,11 +23,12 @@ from shortener.views import kirr_redirect_view, KirrCBView
 # from another_app.views import views (two views, confusing)
 
 #mapping URLs: when url is hit, it goes to corresponding URL section or view
+#patterns are executed top to bottom
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^a/(?P<shortcode>[\w-]+)/$', kirr_redirect_view),
-    url(r'^b/(?P<shortcode>[\w-]+)/$', KirrCBView.as_view()),
-
+    url(r'^a/(?P<shortcode>[\w-]+){6,15}/$', kirr_redirect_view),
+    url(r'^b/(?P<shortcode>[\w-]+){6,15}/$', KirrCBView.as_view()),
+    #{6, 15} = SHORTCODE_MIN, SHORTCODE_MAX
     #DO NOT DO
     #url(r'^abc/$', shortener.views.kirr_redirect_view)
     #url(r'^abc/$', views.kirr_redirect_view)
