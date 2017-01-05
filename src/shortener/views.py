@@ -3,6 +3,16 @@ from django.shortcuts import render, get_object_or_404
 from django.views import View
 from .models import KirrURL
 
+class HomeView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, "shortener/home.html", {})
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        print(request.POST['url'])
+        print(request.POST.get('url'))
+        return render(request, "shortener/home.html", {}) 
+
 def kirr_redirect_view(request, shortcode=None, *args, **kwargs): #function based view
     #PAGE NOT FOUNT
     obj = get_object_or_404(KirrURL, shortcode=shortcode)#yello is field name, white is passed arg

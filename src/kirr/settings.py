@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) #this is manage.py location
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,7 +26,7 @@ SECRET_KEY = '0zfis&nggc3#zrr%hsi79)d#-hv@2+710g7r6s&j2+gwfy!j_k'
 DEBUG = True
 
 #added via sudo nano /etc/hosts -- for testing
-ALLOWED_HOSTS = ['www.tirr.com', 'tirr.com']
+ALLOWED_HOSTS = ['www.tirr.com', 'tirr.com', 'www.kirr.co', 'kirr.co']
 
 
 # Application definition
