@@ -1,17 +1,41 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views import View
+
+from .forms import SubmitUrlForm
 from .models import KirrURL
 
 class HomeView(View):
     def get(self, request, *args, **kwargs):
-        return render(request, "shortener/home.html", {})
+        the_form = SubmitUrlForm()
+        context = {
+            "title": "Kirr.co",
+            "form": the_form,
+        }
+        return render(request, "shortener/home.html", context)
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
-        print(request.POST['url'])
-        print(request.POST.get('url'))
-        return render(request, "shortener/home.html", {}) 
+        
+        form = SubmitUrlForm(request.POST) #passing in form data
+        context = {
+            "title": "Kirr.co",
+            "form": form,
+        }
+        template = "shortener/home.html"
+
+        if form.is_valid():
+            new_url = form.cleaned_data.get("url")
+            obj, created = KirrURL.objects.get_or_create(url=new_url)
+            context = {
+                "object": obj,
+                "created": created,
+            }
+            if created:
+                template = "shortener/success.html"
+            else:
+                template = "shortener/already-exists.html"
+        
+        return render(request, template, context) 
 
 def kirr_redirect_view(request, shortcode=None, *args, **kwargs): #function based view
     #PAGE NOT FOUNT

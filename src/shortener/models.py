@@ -2,7 +2,11 @@ from __future__ import unicode_literals
 from django.conf import settings #import Configuration settings
 from django.db import models
 
+from django_hosts.resolvers import reverse
+
+from .validators import validate_url, validate_dot_com
 from .utils import code_generator, create_shortcode
+
 
 SHORTCODE_MAX = getattr(settings, "SHORTCODE_MAX", 15) #looking for "SHORTCODE_MAX" in settings,
 #if not there, set it -- good when reusing the app
@@ -39,7 +43,7 @@ class KirrURLManager(models.Manager):
 
 
 class KirrURL(models.Model):
-    url         = models.CharField(max_length=220)
+    url         = models.CharField(max_length=220, validators=[validate_url, validate_dot_com])
     shortcode   = models.CharField(max_length=SHORTCODE_MAX, unique=True, blank=True)
     updated     = models.DateTimeField(auto_now=True)#evertime the model is saved
     timestamp   = models.DateTimeField(auto_now_add=True)#when model was created
@@ -62,3 +66,9 @@ class KirrURL(models.Model):
 
     def __unicode__(self):
         return str(self.url)
+
+    def get_short_url(self):
+        """can just template variable to object.get_short_url"""
+        url_path = reverse('scode', kwargs={'shortcode': self.shortcode}, host='www', scheme='http')
+        #kwargs shortcode is coming from urls.py name urlpattern
+        return url_path
