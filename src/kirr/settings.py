@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     #3rd party
     'django_hosts',
     #custom apps
+    'analytics',
     'shortener',
+
 ]
 #inbetween requests
 MIDDLEWARE = [
@@ -61,7 +63,7 @@ ROOT_URLCONF = 'kirr.urls'
 #
 ROOT_HOSTCONF = 'kirr.hosts'
 DEFAULT_HOST = 'www' #match name param in hosts
-DEFAULT_REDIRECT_URL = 'www.tirr.com:8000'
+DEFAULT_REDIRECT_URL = 'http://www.tirr.com:8000'
 PARENT_HOST = 'tirr.com:8000'
 
 

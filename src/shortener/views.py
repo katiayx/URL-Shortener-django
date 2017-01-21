@@ -1,6 +1,8 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 from django.views import View
+
+from analytics.models import ClickEvent
 
 from .forms import SubmitUrlForm
 from .models import KirrURL
@@ -19,7 +21,7 @@ class HomeView(View):
         form = SubmitUrlForm(request.POST) #passing in form data
         context = {
             "title": "Kirr.co",
-            "form": form,
+            "form": form
         }
         template = "shortener/home.html"
 
@@ -37,17 +39,25 @@ class HomeView(View):
         
         return render(request, template, context) 
 
-def kirr_redirect_view(request, shortcode=None, *args, **kwargs): #function based view
-    #PAGE NOT FOUNT
-    obj = get_object_or_404(KirrURL, shortcode=shortcode)#yello is field name, white is passed arg
-    return HttpResponseRedirect(obj.url)
+# def kirr_redirect_view(request, shortcode=None, *args, **kwargs): #function based view
+#     #PAGE NOT FOUNT
+#     obj = get_object_or_404(KirrURL, shortcode=shortcode)#yello is field name, white is passed arg
+#     return HttpResponseRedirect(obj.url)
+#class based views, must specify method
 
-class KirrCBView(View): #class based views, must specify method
+class URLRedirectView(View): 
     def get(self, request, shortcode=None, *args, **kwargs):
+        qs = KirrURL.objects.filter(shortcode__iexact=shortcode)
+        if qs.count != 1 and not qs.exists():
+            raise Http404
+        else: 
+            obj = qs.first()
+            return HttpResponseRedirect(obj.url)
 
-        obj = get_object_or_404(KirrURL, shortcode=shortcode)
-        return HttpResponseRedirect(obj.url)
-
+    def dispatch(self, request, *args, **kwargs):
+        print (self.kwargs.get('shortcode'))
+        print (ClickEvent.objects.create_event(self.get_object()))
+        return super(URLRedirectView,self).dispatch(*args, **kwargs)
 
 
 
@@ -56,7 +66,7 @@ def kirr_redirect_view(request, shortcode=None, *args, **kwargs): #function base
 
 
     #PAGE NOT FOUNT
-    obj = get_object_or_404(KirrURL, shortcode=shortcode)#yello is field name, white is passed arg
+    obj = get_object_or_404(KirrURL, shortcode=shortcode)#yellow is field name, white is passed arg
     obj_url = obj.url
 
     RAISES EXCEPTION IS INPUT SHORTCODE DOESN'T EXIST

@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from shortener.views import KirrCBView, HomeView
+from shortener.views import HomeView, URLRedirectView
 
 #DO NOT DO
 # from shortener.views import views (importing the entire module)
@@ -27,7 +27,9 @@ from shortener.views import KirrCBView, HomeView
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', HomeView.as_view()),
-    url(r'^(?P<shortcode>[\w-]+)/$', KirrCBView.as_view(), name='scode'),
+    url(r'^(?P<shortcode>[\w-]+)/$', URLRedirectView.as_view(), name='scode'),
+    #scode = models.get_short_url arg
+    #mapping from .models
     #{6, 15} = SHORTCODE_MIN, SHORTCODE_MAX
     #DO NOT DO
     #url(r'^abc/$', shortener.views.kirr_redirect_view)

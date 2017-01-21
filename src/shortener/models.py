@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from django.conf import settings #import Configuration settings
 from django.db import models
 
@@ -57,6 +56,8 @@ class KirrURL(models.Model):
         """overriding default save method"""
         if self.shortcode is None or self.shortcode == '': #don't need to reset shortcode everytime
             self.shortcode = create_shortcode(self)
+        if not "http" in self.url:
+            self.url = "http://" + self.url
         super(KirrURL,self).save(*args,**kwargs)#calling save method
 
     def __str__(self):
@@ -70,5 +71,5 @@ class KirrURL(models.Model):
     def get_short_url(self):
         """can just template variable to object.get_short_url"""
         url_path = reverse('scode', kwargs={'shortcode': self.shortcode}, host='www', scheme='http')
-        #kwargs shortcode is coming from urls.py name urlpattern
+        #kwargs shortcode is coming from urls.py name urlpattern arg, 'scode' -> name
         return url_path
